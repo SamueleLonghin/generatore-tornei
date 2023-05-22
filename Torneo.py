@@ -3,6 +3,8 @@ import datetime
 import pandas as pd
 import numpy as np
 
+from Partita import Partita
+
 
 class Torneo:
     def __init__(self, nome, data: pd.DataFrame, n_gironi, n_campi, padding=False):
@@ -34,7 +36,8 @@ class Torneo:
 
     @property
     def matrice_partite(self):
-        return [gen_girone(sqs) for sqs in self.squadre_per_girone]
+        return [gen_girone_partite(sqs) for sqs in self.squadre_per_girone]
+        # return [gen_girone(sqs) for sqs in self.squadre_per_girone]
 
     @property
     def partite_campi(self):
@@ -131,6 +134,17 @@ def gen_girone(df):
     for i, s1 in df.iterrows():
         for j, s2 in df.iterrows():
             p = frozenset((i, j))
+            if i != j:
+                ps.add(p)
+
+    return list(ps)
+
+
+def gen_girone_partite(df):
+    ps = set()
+    for i, s1 in df.iterrows():
+        for j, s2 in df.iterrows():
+            p = Partita(i, j)
             if i != j:
                 ps.add(p)
 
