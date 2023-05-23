@@ -16,9 +16,11 @@ if __name__ == "__main__":
     # genera_gironi(sq_beach, 3, 1)
     # p1 = Person("John", 36)
     # beach = Torneo("Beach", sq_beach, n_gironi=4, n_campi=2, padding=False)
-    beach = Torneo("Beach", sq_beach, n_gironi=4, n_campi=3, padding=True)
+    beach = Torneo("Beach", sq_beach, n_gironi=4, n_campi=2, n_sq_per_girone=3)
+
     # beach = Torneo("Calcetto", calcetto(), n_gironi=4, n_campi=2, padding=True)
     beach.stampa_partite_per_campi()
     beach.stampa_partite_per_gironi()
     beach.stampa_squadre_per_girone()
+    beach.squadre[0].stampa_turni()
     # stampa_partite(partite)
