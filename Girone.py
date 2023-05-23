@@ -14,13 +14,12 @@ class Girone:
         self.torneo = torneo
         self.squadre = squadre
         self.genera_partite()
-        print(squadre)
 
     def genera_partite(self):
         ps = set()
         for s1 in self.squadre:
             for s2 in self.squadre:
-                p = Partita(s1.id, s2.id)
+                p = Partita(s1, s2, self)
                 if s2.id > s1.id:
                     ps.add(p)
                     s1.aggiungi_partita(p)
@@ -30,7 +29,15 @@ class Girone:
 
     def stampa_partite(self):
         for p in self.partite:
-            print(f"{self.torneo.squadra(p.s1)}   -   {self.torneo.squadra(p.s2)}")
+            print(
+                f"{p.s1.nome.center(40)}" +
+                f"({p.ora_inizio} - {p.ora_fine})".center(21) +
+                f"{p.s2.nome.center(40)}"
+            )
+
+    def stampa_partite_squadre(self):
+        for s in self.squadre:
+            s.stampa_partite()
 
     def stampa_squadre(self):
         for s in self.squadre:

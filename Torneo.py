@@ -38,7 +38,6 @@ class Torneo:
             range(self.n_gironi)]
         self.partite = appiattisci([g.partite for g in self.gironi])
         self.ordina_partite()
-        print(self.partite)
 
     @property
     def partite_campi(self):
@@ -51,30 +50,28 @@ class Torneo:
         usati = [0] * self.n_squadre
         while len(pl) > 0:
             if len(plt) == 0:
-                p = Partita(None, None)
+                p = Partita(None, None, self)
             else:
                 p = plt.pop()
                 # pt = tuple(p)
                 # incremento usati
-                usati[p.s1] += 1
-                usati[p.s2] += 1
+                usati[p.s1.id] += 1
+                usati[p.s2.id] += 1
                 if p in pl:
                     pl.remove(p)
 
             turno = len(partite) // self.n_campi
             p.turno = turno
+            p.campo = len(partite) % self.n_campi
             partite.append(p)
             # sq da escludere
+            # ricalcolo il turno relativo alla prossima partita
+            turno = len(partite) // self.n_campi
             i_da = ((turno - 1) * self.n_campi)
             i_da = max(i_da, 0)
-            if turno == 1:
-                print(1)
-            if turno == 2:
-                print(1)
             escludere = [sq for pa in partite[i_da:] for sq in pa]
             # escludere = [sq for pa in partite[-self.n_campi:] for sq in pa]
             plt = get_partite_possibili(escludere, pl, usati)
-            print(plt)
         self.partite_ordinate = partite
 
     # @property
@@ -98,7 +95,14 @@ class Torneo:
             pl = self.partite_campi[campo]
             i = 0
             for p in pl:
-                print(f"{self.squadra(p.s1)}({self.ora_partita(i)} - {self.ora_partita(i + 1)}){self.squadra(p.s2)}")
+                if p.s1 and p.s2:
+                    print(
+                        f"{p.s1.nome.center(40)}" +
+                        f"({p.ora_inizio} - {p.ora_fine})".center(21) +
+                        f"{p.s2.nome.center(40)}"
+                    )
+                else:
+                    print(f"risposo".center(101))
                 i += 1
 
     def stampa_partite_per_campi(self):
@@ -132,11 +136,13 @@ class Torneo:
             g.stampa_partite()
             print("-" * 101)
 
-    def ora_partita(self, i):
-        ora = (self.orario_inizio + datetime.timedelta(minutes=self.durata_partita * i)).time()
-        return ora.strftime("%H:%M").center(5)
-
-
+    def stampa_partite_per_squadre(self):
+        print("X" * 101)
+        print("Partite per Squadre".center(101))
+        for s in self.gironi:
+            print(s.nome.center(101))
+            s.stampa_partite_squadre()
+            print("-" * 101)
 #
 # def gen_girone(df):
 #     ps = set()
@@ -170,7 +176,7 @@ def get_partite_possibili(escludere, pl, usati):
     for p in pl:
         if p.s1 not in escludere and p.s2 not in escludere:
             s.append(p)
-            u.append(usati[p.s1] + usati[p.s2])
+            u.append(usati[p.s1.id] + usati[p.s2.id])
 
     df = pd.DataFrame({'partite': s, 'usati': u})
     df.sort_values(by=['usati'], ascending=False, inplace=True)

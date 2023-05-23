@@ -21,21 +21,21 @@ class Squadra:
         i = 0
         j = 0
         psl = sorted(self.partite)
-        print("Stampo", psl[-1])
-        while i < psl[-1].turno:
-            if psl[j].turno == i:
-                print(f"({psl[j].s1} - {psl[j].s12})\t")
+        print(f"Partite di {self.nome}:" + (" " * (30 - len(self.nome))), end='')
+        while i <= max(psl[-1].turno, 10):
+            if len(psl) > j and psl[j].turno == i:
+                print(f"({psl[j].campo})".center(5), end='')
                 j += 1
             else:
-                print("\t" * 5)
-            i += 0
+                print("-".center(5), end='')
+            i += 1
         print()
 
     def stampa_turni(self):
         psl = sorted(self.partite)
         print("Stampo", psl[-1])
         for p in psl:
-            print("Partita contro ", p.s2, p.s1, p.turno)
+            print("Partita contro", p.s2.nome if p.s1 == self else p.s1.nome, "\t\tal turno", p.turno)
         print()
 
     def aggiungi_partita(self, p):
