@@ -1,3 +1,5 @@
+import pickle
+
 from spreadsheet import beach, calcetto
 from Torneo import Torneo
 
@@ -10,18 +12,48 @@ if __name__ == "__main__":
     # data = spreadsheet_to_df(SPREADSHEET_ID, DATA_TO_PULL)
     # data.to_csv('calcetto.csv')
     # genera_gironi(calcetto(), 2)
-    sq_beach = beach()
+    # sq_beach = beach()
+    # sq_beach = beach()
+    # sq_calcetto = calcetto()
     # sq_beach.to_csv('beach.csv')
     # sq_beach = pd.read_csv('beach.csv')
     # genera_gironi(sq_beach, 3, 1)
     # p1 = Person("John", 36)
-    # beach = Torneo("Beach", sq_beach, n_gironi=4, n_campi=2, n_sq_per_girone=3)
-    # beach = Torneo("Beach", sq_beach, n_gironi=3, n_campi=2, n_sq_per_girone=4)
-    beach = Torneo("Beach", sq_beach, n_gironi=4, n_campi=2, n_sq_per_girone=3)
+    """
+    Beach Volley
+    """
+    ## Versione che si userà -> 4 triangolari in due campi d'erba
+    # torneo = Torneo("Beach", sq_beach, n_gironi=4, n_campi=2, n_sq_per_girone=3)
+    ## Variante con utilizzo del terzo campo
+    # torneo = Torneo("Beach", sq, n_gironi=4, n_campi=3, n_sq_per_girone=3)
 
+    """
+    Calcetto
+    """
+    ## Versione 8 sq in 2 gironi
+    # torneo = Torneo("Calcetto", sq_calcetto, n_gironi=2, n_campi=2, n_sq_per_girone=4)
+    ## Versione 9 sq in 3 gironi
+    # torneo = Torneo("Calcetto", sq_calcetto, n_gironi=3, n_campi=2, n_sq_per_girone=3)
+    ## Versione 10 sq in 2 gironi
+    # torneo = Torneo("Calcetto", sq_calcetto, n_gironi=2, n_campi=2, n_sq_per_girone=5)
+    ## Versione 12 sq in 3 gironi
+    # torneo = Torneo("Calcetto", sq_calcetto, n_gironi=3, n_campi=2, n_sq_per_girone=4)
+    ## Versione 4 triangolari
+    # torneo = Torneo("Calcetto", sq_calcetto, n_gironi=4, n_campi=2, n_sq_per_girone=3)
+    # file = open('torneo.export', 'wb')
+    # pickle.dump(torneo, file)
+    # file.close()
+
+    torneo = None
+    file2 = open('torneo.export', 'rb')
+    t = pickle.load(file2)
     # beach = Torneo("Calcetto", calcetto(), n_gironi=4, n_campi=2, padding=True)
-    beach.stampa_partite_per_campi()
-    # beach.stampa_partite_per_gironi()
-    # beach.stampa_squadre_per_girone()
-    beach.stampa_partite_per_squadre()
+    t.stampa_partite_per_campi()
+    t.stampa_partite_per_turni()
+
+    # torneo.stampa_partite_per_gironi()
+    # torneo.stampa_squadre_per_girone()
+    t.stampa_partite_per_squadre()
+    df = t.partite_df
+    df.to_csv("partite.csv")
     # stampa_partite(partite)

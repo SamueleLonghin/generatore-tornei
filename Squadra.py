@@ -1,5 +1,7 @@
 import pandas as pd
 
+from Style import SPACE_PARTITA_DA_SQUADRA, SPACE_SQUADRA_NOME, ID_CAMPI
+
 
 class Squadra:
     nome = None
@@ -17,17 +19,18 @@ class Squadra:
             squadre.append(Squadra(i, s['Nome']))
         return squadre
 
-    def stampa_partite(self):
+    def stampa_partite(self, torneo=None):
         i = 0
         j = 0
         psl = sorted(self.partite)
-        print(f"Partite di {self.nome}:" + (" " * (30 - len(self.nome))), end='')
-        while i <= max(psl[-1].turno, 10):
+        n_turni = torneo.n_turni if torneo else 10
+        print(self.nome + (" " * (SPACE_SQUADRA_NOME - len(self.nome))), end='')
+        while i < n_turni:
             if len(psl) > j and psl[j].turno == i:
-                print(f"({psl[j].campo})".center(5), end='')
+                print(f"({ID_CAMPI[psl[j].campo]})".center(SPACE_PARTITA_DA_SQUADRA), end='')
                 j += 1
             else:
-                print("-".center(5), end='')
+                print("-".center(SPACE_PARTITA_DA_SQUADRA), end='')
             i += 1
         print()
 

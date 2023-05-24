@@ -1,17 +1,18 @@
-import memo as memo
-
 from Partita import Partita
 from Squadra import Squadra
+from Style import SPACE_PARTITA_DA_SQUADRA, SPACE_SQUADRA_NOME
 
 
 class Girone:
-    squadre = []
+    squadre: [Squadra] = []
     torneo = None
     partite = None
+    id = None
 
-    def __init__(self, torneo, nome, squadre):
+    def __init__(self, torneo, nome, id, squadre):
         self.nome = nome
         self.torneo = torneo
+        self.id = id
         self.squadre = squadre
         self.genera_partite()
 
@@ -19,25 +20,21 @@ class Girone:
         ps = set()
         for s1 in self.squadre:
             for s2 in self.squadre:
-                p = Partita(s1, s2, self)
                 if s2.id > s1.id:
+                    p = Partita(s1, s2, self)
                     ps.add(p)
                     s1.aggiungi_partita(p)
                     s2.aggiungi_partita(p)
-
         self.partite = list(ps)
 
     def stampa_partite(self):
         for p in self.partite:
-            print(
-                f"{p.s1.nome.center(40)}" +
-                f"({p.ora_inizio} - {p.ora_fine})".center(21) +
-                f"{p.s2.nome.center(40)}"
-            )
+            print(p)
 
     def stampa_partite_squadre(self):
+        s: Squadra
         for s in self.squadre:
-            s.stampa_partite()
+            s.stampa_partite(self.torneo)
 
     def stampa_squadre(self):
         for s in self.squadre:

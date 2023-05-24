@@ -6,12 +6,15 @@ import numpy as np
 from Girone import Girone
 from Partita import Partita
 from Squadra import Squadra
+from Style import SPACE_SQUADRA_NOME, SPACE_ORA_INIZIO_FINE, SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ, NOMI_GIRONI, NOMI_CAMPI, \
+    SPACE_PARTITA_DA_SQUADRA
 
 
 class Torneo:
     nome = None
     n_gironi = 0
     n_campi = 0
+    n_turni = 0
     durata_partita = 30
     orario_inizio = datetime.datetime(hour=14, minute=30, day=1, month=1, year=2000)
     squadre = None
@@ -19,7 +22,7 @@ class Torneo:
     partite_ordinate = None
     partite = []
 
-    def __init__(self, nome, data: pd.DataFrame, n_gironi, n_campi, n_sq_per_girone=None, padding=False):
+    def __init__(self, nome, data: pd.DataFrame, n_gironi, n_campi, n_sq_per_girone=None, padding=True):
         self.nome = nome
         self.n_campi = n_campi
         self.n_gironi = n_gironi
@@ -27,17 +30,19 @@ class Torneo:
         if not self.n_sq_per_girone:
             self.n_sq_per_girone = len(data) // self.n_gironi
         if padding:
-            agg = n_gironi - (len(data) % n_gironi)
-            print("Aggiungo", agg, "partedo da ", len(data))
+            agg = (n_gironi * n_sq_per_girone) - len(data)
             for i in range(agg):
-                data.loc[len(data)] = ['Pad'] * data.loc[0].size
+                data.loc[len(data)] = [f"Pad {i + 1}"] * data.loc[0].size
         self.squadre = Squadra.from_df(data)
-        print(f"Genero girone di {self.n_sq_per_girone} sq per {self.n_gironi} gironi partendo da {self.n_squadre} sq")
-        self.gironi = [
-            Girone(self, f"Girone {i} ", self.squadre[self.n_sq_per_girone * i:self.n_sq_per_girone * (i + 1)]) for i in
-            range(self.n_gironi)]
+        self.genera_gironi()
         self.partite = appiattisci([g.partite for g in self.gironi])
         self.ordina_partite()
+
+    def genera_gironi(self):
+        self.gironi = [
+            Girone(self, NOMI_GIRONI[i], i, self.squadre[self.n_sq_per_girone * i:self.n_sq_per_girone * (i + 1)])
+            for i in range(self.n_gironi)
+        ]
 
     @property
     def partite_campi(self):
@@ -60,17 +65,15 @@ class Torneo:
                 if p in pl:
                     pl.remove(p)
 
-            turno = len(partite) // self.n_campi
-            p.turno = turno
+            p.turno = self.n_turni
             p.campo = len(partite) % self.n_campi
             partite.append(p)
+            # Ricalcolo il turno attuale
+            self.n_turni = len(partite) // self.n_campi
             # sq da escludere
-            # ricalcolo il turno relativo alla prossima partita
-            turno = len(partite) // self.n_campi
-            i_da = ((turno - 1) * self.n_campi)
+            i_da = ((self.n_turni - 1) * self.n_campi)
             i_da = max(i_da, 0)
             escludere = [sq for pa in partite[i_da:] for sq in pa]
-            # escludere = [sq for pa in partite[-self.n_campi:] for sq in pa]
             plt = get_partite_possibili(escludere, pl, usati)
         self.partite_ordinate = partite
 
@@ -84,86 +87,81 @@ class Torneo:
 
     @property
     def partite_df(self):
-        return pd.DataFrame(np.rot90(np.array(self.partite_campi)))
+        pl = []
+        for p in self.partite_ordinate:
+            pl.append(p.to_df_row())
+        return pd.DataFrame(pl)
+        # return pd.DataFrame(np.rot90(np.array(self.partite_campi)))
 
     @property
     def partite_list(self):
         return [tuple(p) for p in self.partite_ordinate]
 
+    def get_partite_per_turno(self, turno):
+        return self.partite_ordinate[self.n_campi * turno: self.n_campi * (turno + 1)]
+
     def stampa_partite_per_campo(self, campo):
         if campo < self.n_campi:
             pl = self.partite_campi[campo]
-            i = 0
             for p in pl:
-                if p.s1 and p.s2:
-                    print(
-                        f"{p.s1.nome.center(40)}" +
-                        f"({p.ora_inizio} - {p.ora_fine})".center(21) +
-                        f"{p.s2.nome.center(40)}"
-                    )
-                else:
-                    print(f"risposo".center(101))
-                i += 1
+                print(p)
 
     def stampa_partite_per_campi(self):
-        print("X" * 101)
-        print("Partite per Campi".center(101))
+        print("X" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
+        print("Partite per Campi".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
         for i in range(self.n_campi):
-            print(f"Campo {i}".center(101))
+            print(NOMI_CAMPI[i].center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
             self.stampa_partite_per_campo(i)
-            print("-" * 101)
+            print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
+
+    def stampa_partite_per_turno(self, turno):
+        if turno < self.n_turni:
+            for p in self.get_partite_per_turno(turno):
+                print(p.partita_campo)
+
+    def stampa_partite_per_turni(self):
+        print("X" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
+        print("Partite per Turni".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
+        for i in range(self.n_turni):
+            print(f"Turno {i}".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
+            self.stampa_partite_per_turno(i)
+            print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
 
     def squadra(self, id):
-        if id is None:
-            out = 'riposo'
-        else:
-            out = self.squadre[id].nome
-        return str(out).center(48)
+        if id is not None:
+            return self.squadre[id].nome
 
     def stampa_squadre_per_girone(self):
-        print("X" * 101)
-        print("Squadre per girone".center(101))
+        print("X" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
+        print("Squadre per girone".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
         for g in self.gironi:
-            print(g.nome.center(101))
+            print(g.nome.center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
             g.stampa_squadre()
-            print("-" * 101)
+            print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
 
     def stampa_partite_per_gironi(self):
-        print("X" * 101)
-        print("Partite per Gironi".center(101))
+        print("X" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
+        print("Partite per Gironi".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
         for g in self.gironi:
-            print(g.nome.center(101))
+            print(g.nome.center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
             g.stampa_partite()
-            print("-" * 101)
+            print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
 
     def stampa_partite_per_squadre(self):
-        print("X" * 101)
-        print("Partite per Squadre".center(101))
-        for s in self.gironi:
-            print(s.nome.center(101))
-            s.stampa_partite_squadre()
-            print("-" * 101)
-#
-# def gen_girone(df):
-#     ps = set()
-#     for i, s1 in df.iterrows():
-#         for j, s2 in df.iterrows():
-#             p = frozenset((i, j))
-#             if i != j:
-#                 ps.add(p)
-#
-#     return list(ps)
-#
-#
-# def gen_girone_partite(df):
-#     ps = set()
-#     for i, s1 in df.iterrows():
-#         for j, s2 in df.iterrows():
-#             p = Partita(i, j)
-#             if i != j:
-#                 ps.add(p)
-#
-#     return list(ps)
+        print("X" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
+        print("Partite per Squadre".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
+        print("".center(SPACE_SQUADRA_NOME), end='')
+        for i in range(self.n_turni + 1):
+            print(Partita.ora_inizio_partita(self, i).center(SPACE_PARTITA_DA_SQUADRA), end='')
+        print()
+        for g in self.gironi:
+            print(g.nome.center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
+            g.stampa_partite_squadre()
+            print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
+
+    def set_risultato(self, turno, campo, p1, p2):
+        partita = self.partite_ordinate[turno * self.n_campi + campo]
+        partita.set_risultato(p1, p2)
 
 
 def appiattisci(p):
