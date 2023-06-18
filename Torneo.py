@@ -1,13 +1,12 @@
 import datetime
+import pickle
 
 import pandas as pd
-import numpy as np
 
 from Girone import Girone
 from Partita import Partita
 from Squadra import Squadra
-from Style import SPACE_SQUADRA_NOME, SPACE_ORA_INIZIO_FINE, SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ, NOMI_GIRONI, NOMI_CAMPI, \
-    SPACE_PARTITA_DA_SQUADRA
+from Style import *
 
 
 class Torneo:
@@ -159,9 +158,39 @@ class Torneo:
             g.stampa_partite_squadre()
             print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
 
+    def df_partite_per_squadre(self):
+        cols = ['squadra', 'girone']
+        c = [Partita.ora_inizio_partita(self, i) for i in range(self.n_turni)]
+        cols += c
+        df = pd.DataFrame(columns=cols)
+        for g in self.gironi:
+            for s in g.squadre:
+                ss = [s.nome, g.nome]
+                sp = s.get_partite_ordinate(self)
+                sf = ss + sp
+                print(sf)
+                df.loc[len(df)] = sf
+        return df
+
     def set_risultato(self, turno, campo, p1, p2):
         partita = self.partite_ordinate[turno * self.n_campi + campo]
         partita.set_risultato(p1, p2)
+
+    def save(self, filename):
+        file = open(filename, 'wb')
+        pickle.dump(self, file)
+        file.close()
+
+    @classmethod
+    def load(cls):
+        return
+
+    def df_squadre_per_girone(self):
+        df = pd.DataFrame(columns=['squadra', 'girone'])
+        for g in self.gironi:
+            for s in g.squadre:
+                df.loc[len(df)] = (s.nome, g.nome)
+        return df
 
 
 def appiattisci(p):

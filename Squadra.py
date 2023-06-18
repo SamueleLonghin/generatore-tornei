@@ -27,13 +27,30 @@ class Squadra:
         print(self.nome + (" " * (SPACE_SQUADRA_NOME - len(self.nome))), end='')
         while i < n_turni:
             if len(psl) > j and psl[j].turno == i:
-                print(f"({ID_CAMPI[psl[j].campo]})".center(SPACE_PARTITA_DA_SQUADRA), end='')
+                if psl[j].stato == psl[j].stato.FINITA:
+                    print(f"(/)".center(SPACE_PARTITA_DA_SQUADRA), end='')
+                else:
+                    print(f"({ID_CAMPI[psl[j].campo]})".center(SPACE_PARTITA_DA_SQUADRA), end='')
                 j += 1
             else:
                 print("-".center(SPACE_PARTITA_DA_SQUADRA), end='')
             i += 1
         print()
 
+    def get_partite_ordinate(self, torneo=None):
+        i = 0
+        j = 0
+        psl = sorted(self.partite)
+        n_turni = torneo.n_turni if torneo else 10
+        partite = []
+        while i < n_turni:
+            if len(psl) > j and psl[j].turno == i:
+                partite.extend( [str(psl[j].campo)])
+                j += 1
+            else:
+                partite.extend([ None])
+            i += 1
+        return partite
     def stampa_turni(self):
         psl = sorted(self.partite)
         print("Stampo", psl[-1])

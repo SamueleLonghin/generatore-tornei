@@ -1,7 +1,5 @@
-import pickle
-
-from spreadsheet import beach, calcetto
 from Torneo import Torneo
+import pandas as pd
 
 if __name__ == "__main__":
     # create_connection("./db")
@@ -16,7 +14,7 @@ if __name__ == "__main__":
     # sq_beach = beach()
     # sq_calcetto = calcetto()
     # sq_beach.to_csv('beach.csv')
-    # sq_beach = pd.read_csv('beach.csv')
+    sq_beach = pd.read_csv('squadre.csv')
     # genera_gironi(sq_beach, 3, 1)
     # p1 = Person("John", 36)
     """
@@ -37,23 +35,34 @@ if __name__ == "__main__":
     ## Versione 10 sq in 2 gironi
     # torneo = Torneo("Calcetto", sq_calcetto, n_gironi=2, n_campi=2, n_sq_per_girone=5)
     ## Versione 12 sq in 3 gironi
-    # torneo = Torneo("Calcetto", sq_calcetto, n_gironi=3, n_campi=2, n_sq_per_girone=4)
+    # torneo = Torneo("Calcetto", sq_beach, n_gironi=3, n_campi=2, n_sq_per_girone=4)
     ## Versione 4 triangolari
-    # torneo = Torneo("Calcetto", sq_calcetto, n_gironi=4, n_campi=2, n_sq_per_girone=3)
+    torneo = Torneo("Calcetto", sq_beach, n_gironi=4, n_campi=2, n_sq_per_girone=3)
     # file = open('torneo.export', 'wb')
     # pickle.dump(torneo, file)
     # file.close()
 
-    torneo = None
-    file2 = open('torneo.export', 'rb')
-    t = pickle.load(file2)
+    # # torneo = None
+    # file2 = open('torneo.export', 'rb')
+    # torneo: Torneo = pickle.load(file2)
     # beach = Torneo("Calcetto", calcetto(), n_gironi=4, n_campi=2, padding=True)
-    t.stampa_partite_per_campi()
-    t.stampa_partite_per_turni()
+    torneo.stampa_partite_per_campi()
+    torneo.set_risultato(4, 0, 3, 2)
+    torneo.stampa_partite_per_turni()
 
-    # torneo.stampa_partite_per_gironi()
-    # torneo.stampa_squadre_per_girone()
-    t.stampa_partite_per_squadre()
-    df = t.partite_df
-    df.to_csv("partite.csv")
+    torneo.stampa_partite_per_gironi()
+    torneo.stampa_squadre_per_girone()
+    sqg = torneo.df_squadre_per_girone()
+    # torneo.stampa_partite_per_squadre()
+    # df = torneo.partite_df
+    # df.to_csv("partite.csv")
+
+    # Salvo Torneo
+    torneo.save('calcetto.export')
     # stampa_partite(partite)
+
+    print()
+    print(sqg)
+    print()
+
+    torneo.df_partite_per_squadre().to_csv('partite_squadre.csv')

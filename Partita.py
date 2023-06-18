@@ -2,7 +2,7 @@ import datetime
 from enum import Enum
 
 from Squadra import Squadra
-from Style import SPACE_SQUADRA_NOME, SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ, SPACE_ORA_INIZIO_FINE, NOMI_CAMPI
+from Style import SPACE_SQUADRA_NOME, SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ, SPACE_ORA_INIZIO_FINE, NOMI_CAMPI, ID_CAMPI
 
 
 class Partita:
@@ -88,10 +88,22 @@ class Partita:
         if self.s1 and self.s2:
             sq1 = self.s1.nome
             sq2 = self.s2.nome
-
-            return sq1.center(SPACE_SQUADRA_NOME) + \
-                f"({NOMI_CAMPI[self.campo]})".center(SPACE_ORA_INIZIO_FINE) + \
-                sq2.center(SPACE_SQUADRA_NOME)
+            if self.stato == self.Stato.PROGRAMMATA:
+                return sq1.center(SPACE_SQUADRA_NOME) + \
+                    f"({NOMI_CAMPI[self.campo]})".center(SPACE_ORA_INIZIO_FINE) + \
+                    sq2.center(SPACE_SQUADRA_NOME)
+            elif self.stato == self.Stato.IN_GIOCO:
+                return sq1.center(SPACE_SQUADRA_NOME) + \
+                    f"(in gioco ({ID_CAMPI[self.campo]}))".center(SPACE_ORA_INIZIO_FINE) + \
+                    sq2.center(SPACE_SQUADRA_NOME)
+            else:
+                if self.pt1 >= self.pt2:
+                    sq1 = f"[{sq1}]"
+                if self.pt2 >= self.pt1:
+                    sq2 = f"[{sq2}]"
+                return sq1.center(SPACE_SQUADRA_NOME) + \
+                    f"{self.pt1} - {self.pt2}".center(SPACE_ORA_INIZIO_FINE) + \
+                    sq2.center(SPACE_SQUADRA_NOME)
         else:
             return f"riposo".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
 
