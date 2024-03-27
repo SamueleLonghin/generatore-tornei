@@ -1,5 +1,6 @@
 from Torneo import Torneo
-import pandas as pd
+
+from spreadsheet import calcetto
 
 if __name__ == "__main__":
     # create_connection("./db")
@@ -12,9 +13,9 @@ if __name__ == "__main__":
     # genera_gironi(calcetto(), 2)
     # sq_beach = beach()
     # sq_beach = beach()
-    # sq_calcetto = calcetto()
+    sq_calcetto = calcetto()
     # sq_beach.to_csv('beach.csv')
-    sq_beach = pd.read_csv('squadre.csv')
+    # sq_beach = pd.read_csv('squadre.csv')
     # genera_gironi(sq_beach, 3, 1)
     # p1 = Person("John", 36)
     """
@@ -37,7 +38,8 @@ if __name__ == "__main__":
     ## Versione 12 sq in 3 gironi
     # torneo = Torneo("Calcetto", sq_beach, n_gironi=3, n_campi=2, n_sq_per_girone=4)
     ## Versione 4 triangolari
-    torneo = Torneo("Calcetto", sq_beach, n_gironi=4, n_campi=2, n_sq_per_girone=3)
+    torneo = Torneo("Calcetto", sq_calcetto, n_gironi=3, n_campi=1, n_sq_per_girone=4, minuti=0, ore=9,
+                    durata_partita=25)
     # file = open('torneo.export', 'wb')
     # pickle.dump(torneo, file)
     # file.close()
@@ -47,7 +49,7 @@ if __name__ == "__main__":
     # torneo: Torneo = pickle.load(file2)
     # beach = Torneo("Calcetto", calcetto(), n_gironi=4, n_campi=2, padding=True)
     torneo.stampa_partite_per_campi()
-    torneo.set_risultato(4, 0, 3, 2)
+    # torneo.set_risultato(4, 0, 3, 2)
     torneo.stampa_partite_per_turni()
 
     torneo.stampa_partite_per_gironi()
