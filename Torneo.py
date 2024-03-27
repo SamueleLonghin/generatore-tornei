@@ -14,18 +14,26 @@ class Torneo:
     n_gironi = 0
     n_campi = 0
     n_turni = 0
-    durata_partita = 30
-    orario_inizio = datetime.datetime(hour=14, minute=30, day=1, month=1, year=2000)
+    durata_partita = None
+    orario_inizio = None
     squadre = None
     gironi = None
     partite_ordinate = None
     partite = []
 
-    def __init__(self, nome, data: pd.DataFrame, n_gironi, n_campi, n_sq_per_girone=None, padding=True):
+    def __init__(self, nome, data: pd.DataFrame, n_gironi, n_campi, n_sq_per_girone=None, padding=True,
+                 orario_inizio=datetime.datetime(hour=14, minute=30, day=1, month=1, year=2000),
+                 ore=None, minuti=None, durata_partita=30):
         self.nome = nome
         self.n_campi = n_campi
         self.n_gironi = n_gironi
         self.n_sq_per_girone = n_sq_per_girone
+        self.orario_inizio = orario_inizio
+        self.durata_partita = durata_partita
+        if ore is not None:
+            self.orario_inizio = self.orario_inizio.replace(hour=ore)
+        if minuti is not None:
+            self.orario_inizio = self.orario_inizio.replace(minute=minuti)
         if not self.n_sq_per_girone:
             self.n_sq_per_girone = len(data) // self.n_gironi
         if padding:
