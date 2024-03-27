@@ -3,6 +3,6 @@ SPACE_SQUADRA_NOME = 40
 SPACE_ORA_INIZIO_FINE = 15
 SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ = SPACE_ORA_INIZIO_FINE + SPACE_SQUADRA_NOME * 2
 
-NOMI_CAMPI = ["Campo 1", "Campo 2", "Campo 3"]
-ID_CAMPI = ["1", "2", "3"]
+NOMI_CAMPI = [f"Campo {i}" for i in range(1, 10)]
+ID_CAMPI = [i for i in range(1, 10)]
 NOMI_GIRONI = ["Girone A", "Girone B", "Girone C", "Girone D"]
