@@ -3,8 +3,13 @@ from __future__ import print_function
 import pandas as pd
 
 from GoogleService import GoogleService
+from secret import RANGE_CALCETTO, RANGE_BEACH, SPREADSHEET_ID
 
 goolgle_service = GoogleService()
+
+
+def spreadsheet_name(spreadsheet_id):
+    return goolgle_service.drive_service.files().get(fileId=spreadsheet_id, fields='name').execute()['name']
 
 
 def spreadsheet_range(spreadsheet_id, data_to_pull):
@@ -24,12 +29,6 @@ def spreadsheet_to_df(spreadsheet_id, data_to_pull):
         return pd.DataFrame(values[1:], columns=values[0])
     else:
         print("No data found.")
-
-
-SPREADSHEET_ID = "1za3fWKC5tzrHgAarcRIPQVByM9ID5mXTzpLl-iI9Zsw"
-
-RANGE_BEACH = "Beach"
-RANGE_CALCETTO = "Calcetto"
 
 
 def calcetto(limita=None):
