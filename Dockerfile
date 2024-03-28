@@ -7,7 +7,8 @@ WORKDIR /app
 RUN git clone https://github.com/SamueleLonghin/generatore-tornei .
 
 # Copio il file requirements, va fatto anche se ho il volume
-COPY /src/requirements.txt /app/requirements.txt
+#COPY /src/requirements.txt /app/requirements.txt
+COPY /src /app
 # Installa le dipendenze
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
