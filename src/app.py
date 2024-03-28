@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request, jsonify
 
+
 from GoogleService import GoogleService
 from TorneoToHTML import TorneoToHTML
 from config import SHEET_NAME, RANGE_TEAM_NAMES
 from spreadsheet import spreadsheet_to_df, spreadsheet_cell, spreadsheet_name
 
 app = Flask(__name__)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 @app.route('/')
@@ -74,6 +78,3 @@ def fetch(spreadsheet_id):
 
     return render_template("torneo.html", title=name, html=sq_per_gir + pa_per_sq + pa_per_cm + pa_per_tu + pa_per_gi)
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
