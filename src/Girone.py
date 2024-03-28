@@ -1,12 +1,11 @@
 from Partita import Partita
 from Squadra import Squadra
-from Style import SPACE_PARTITA_DA_SQUADRA, SPACE_SQUADRA_NOME
 
 
 class Girone:
     squadre: [Squadra] = []
     torneo = None
-    partite = None
+    partite: [Partita] = None
     id = None
 
     def __init__(self, torneo, nome, id, squadre):
@@ -27,15 +26,15 @@ class Girone:
                     s2.aggiungi_partita(p)
         self.partite = list(ps)
 
-    def stampa_partite(self):
-        for p in self.partite:
-            print(p)
+    # def stampa_partite(self):
+    #     for p in self.partite:
+    #         print(p)
 
-    def stampa_partite_squadre(self):
-        s: Squadra
-        for s in self.squadre:
-            s.stampa_partite(self.torneo)
+    # def stampa_partite_squadre(self):
+    #     s: Squadra
+    #     for s in self.squadre:
+    #         s.stampa_partite(self.torneo)
 
-    def stampa_squadre(self):
-        for s in self.squadre:
-            print(f"{s.nome}")
+    # def stampa_squadre(self):
+    #     for s in self.squadre:
+    #         print(f"{s.nome}")

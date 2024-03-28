@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flask App</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<button id="btnCrea">Crea</button>
+
+<form action="/fetchFORM" method="POST">
+    <label for="spreadsheetIDInput">SpreadSheet ID</label><input type="text" name="spreasheetID" id="spreadsheetIDInput">
+    <input type="submit">
+</form>
+
+<script>
+    $('#btnCrea').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/crea",
+            success: function (response) {
+                $('#spreadsheetIDInput').val(response.id);
+                // Apre il nuovo URL in una nuova scheda
+                window.open(response.url, '_blank');
+            }
+        });
+    });
+</script>
+</body>
+</html>

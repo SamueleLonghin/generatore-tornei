@@ -1,16 +1,11 @@
 import datetime
-from enum import Enum
 
 from Squadra import Squadra
 from Style import SPACE_SQUADRA_NOME, SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ, SPACE_ORA_INIZIO_FINE, NOMI_CAMPI, ID_CAMPI
+from src.support import Stato
 
 
 class Partita:
-    class Stato(Enum):
-        PROGRAMMATA = 0
-        IN_GIOCO = 1
-        FINITA = 2
-
     s1 = None
     s2 = None
     set1 = 0
@@ -64,11 +59,11 @@ class Partita:
         if self.s1 and self.s2:
             sq1 = self.s1.nome
             sq2 = self.s2.nome
-            if self.stato == self.Stato.PROGRAMMATA:
+            if self.stato == self.stato.PROGRAMMATA:
                 return sq1.center(SPACE_SQUADRA_NOME) + \
                     f"({self.ora_inizio} - {self.ora_fine})".center(SPACE_ORA_INIZIO_FINE) + \
                     sq2.center(SPACE_SQUADRA_NOME)
-            elif self.stato == self.Stato.IN_GIOCO:
+            elif self.stato == self.stato.IN_GIOCO:
                 return sq1.center(SPACE_SQUADRA_NOME) + \
                     f"(in gioco)".center(SPACE_ORA_INIZIO_FINE) + \
                     sq2.center(SPACE_SQUADRA_NOME)
@@ -88,11 +83,11 @@ class Partita:
         if self.s1 and self.s2:
             sq1 = self.s1.nome
             sq2 = self.s2.nome
-            if self.stato == self.Stato.PROGRAMMATA:
+            if self.stato == self.stato.PROGRAMMATA:
                 return sq1.center(SPACE_SQUADRA_NOME) + \
                     f"({NOMI_CAMPI[self.campo]})".center(SPACE_ORA_INIZIO_FINE) + \
                     sq2.center(SPACE_SQUADRA_NOME)
-            elif self.stato == self.Stato.IN_GIOCO:
+            elif self.stato == self.stato.IN_GIOCO:
                 return sq1.center(SPACE_SQUADRA_NOME) + \
                     f"(in gioco ({ID_CAMPI[self.campo]}))".center(SPACE_ORA_INIZIO_FINE) + \
                     sq2.center(SPACE_SQUADRA_NOME)
@@ -129,7 +124,7 @@ class Partita:
     def set_risultato(self, p1, p2):
         self.pt1 = p1
         self.pt2 = p2
-        self.stato = Partita.Stato.FINITA
+        self.stato = Partita.stato.FINITA
 
     def to_df_row(self):
         return {

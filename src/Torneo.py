@@ -84,21 +84,18 @@ class Torneo:
             plt = get_partite_possibili(escludere, pl, usati)
         self.partite_ordinate = partite
 
-    # @property
-    # def partite(self):
-    #     return appiattisci([g.partite for g in self.gironi])
-
     @property
     def n_squadre(self):
         return len(self.squadre)
 
     @property
     def partite_df(self):
-        pl = []
-        for p in self.partite_ordinate:
-            pl.append(p.to_df_row())
-        return pd.DataFrame(pl)
-        # return pd.DataFrame(np.rot90(np.array(self.partite_campi)))
+        return [p.to_df_row() for p in self.partite_ordinate]
+        # pl = []
+        # p: Partita
+        # for p in self.partite_ordinate:
+        #     pl.append(p.to_df_row())
+        # return pd.DataFrame(pl)
 
     @property
     def partite_list(self):
@@ -107,98 +104,27 @@ class Torneo:
     def get_partite_per_turno(self, turno):
         return self.partite_ordinate[self.n_campi * turno: self.n_campi * (turno + 1)]
 
-    def stampa_partite_per_campo(self, campo):
-        if campo < self.n_campi:
-            pl = self.partite_campi[campo]
-            for p in pl:
-                print(p)
-
-    def stampa_partite_per_campi(self):
-        print("X" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
-        print("Partite per Campi".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
-        for i in range(self.n_campi):
-            print(NOMI_CAMPI[i].center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
-            self.stampa_partite_per_campo(i)
-            print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
-
-    def stampa_partite_per_turno(self, turno):
-        if turno < self.n_turni:
-            for p in self.get_partite_per_turno(turno):
-                print(p.partita_campo)
-
-    def stampa_partite_per_turni(self):
-        print("X" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
-        print("Partite per Turni".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
-        for i in range(self.n_turni):
-            print(f"Turno {i}".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
-            self.stampa_partite_per_turno(i)
-            print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
+    @property
+    def partite_per_turno(self):
+        return [self.partite_ordinate[self.n_campi * turno: self.n_campi * (turno + 1)] for turno in
+                range(self.n_turni)]
 
     def squadra(self, id):
         if id is not None:
             return self.squadre[id].nome
 
-    def stampa_squadre_per_girone(self):
-        print("X" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
-        print("Squadre per girone".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
-        for g in self.gironi:
-            print(g.nome.center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
-            g.stampa_squadre()
-            print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
-
-    def stampa_partite_per_gironi(self):
-        print("X" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
-        print("Partite per Gironi".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
-        for g in self.gironi:
-            print(g.nome.center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
-            g.stampa_partite()
-            print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
-
-    def stampa_partite_per_squadre(self):
-        print("X" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
-        print("Partite per Squadre".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
-        print("".center(SPACE_SQUADRA_NOME), end='')
-        for i in range(self.n_turni + 1):
-            print(Partita.ora_inizio_partita(self, i).center(SPACE_PARTITA_DA_SQUADRA), end='')
-        print()
-        for g in self.gironi:
-            print(g.nome.center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
-            g.stampa_partite_squadre()
-            print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
-
-    def df_partite_per_squadre(self):
-        cols = ['squadra', 'girone']
-        c = [Partita.ora_inizio_partita(self, i) for i in range(self.n_turni)]
-        cols += c
-        df = pd.DataFrame(columns=cols)
-        for g in self.gironi:
-            for s in g.squadre:
-                ss = [s.nome, g.nome]
-                sp = s.get_partite_ordinate(self)
-                sf = ss + sp
-                print(sf)
-                df.loc[len(df)] = sf
-        return df
-
     def set_risultato(self, turno, campo, p1, p2):
         partita = self.partite_ordinate[turno * self.n_campi + campo]
         partita.set_risultato(p1, p2)
-
-    def save(self, filename):
-        file = open(filename, 'wb')
-        pickle.dump(self, file)
-        file.close()
 
     @classmethod
     def load(cls):
         return
 
-    def df_squadre_per_girone(self):
-        df = pd.DataFrame(columns=['squadra', 'girone'])
-        for g in self.gironi:
-            for s in g.squadre:
-                df.loc[len(df)] = (s.nome, g.nome)
-        return df
+    def save(self, filename):
+        file = open(filename, 'wb')
+        pickle.dump(self, file)
+        file.close()
 
 
 def appiattisci(p):
