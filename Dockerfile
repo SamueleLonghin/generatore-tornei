@@ -4,6 +4,8 @@ FROM python:3.12
 # Imposta la directory di lavoro nel container
 WORKDIR /app
 
+RUN git clone https://github.com/SamueleLonghin/generatore-tornei .
+
 # Copio il file requirements, va fatto anche se ho il volume
 COPY /src/requirements.txt /app/requirements.txt
 # Installa le dipendenze
