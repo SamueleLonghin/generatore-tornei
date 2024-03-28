@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 
-from src.GoogleService import GoogleService
-from src.TorneoToHTML import TorneoToHTML
-from src.config import SHEET_NAME, RANGE_TEAM_NAMES
-from src.spreadsheet import spreadsheet_to_df, spreadsheet_cell, spreadsheet_name
+from GoogleService import GoogleService
+from TorneoToHTML import TorneoToHTML
+from config import SHEET_NAME, RANGE_TEAM_NAMES
+from spreadsheet import spreadsheet_to_df, spreadsheet_cell, spreadsheet_name
 
 app = Flask(__name__)
 

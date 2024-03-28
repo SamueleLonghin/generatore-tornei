@@ -1,7 +1,7 @@
 import pandas as pd
 
 from Style import SPACE_PARTITA_DA_SQUADRA, SPACE_SQUADRA_NOME, ID_CAMPI
-from src.config import ATTRIBUTO_NOME_SQUADRA
+from config import ATTRIBUTO_NOME_SQUADRA
 
 
 class Squadra:

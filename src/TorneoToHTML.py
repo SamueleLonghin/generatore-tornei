@@ -1,5 +1,5 @@
-from src.Style import NOMI_TURNI, NOMI_CAMPI
-from src.TorneoToDF import TorneoToDF
+from Style import NOMI_TURNI, NOMI_CAMPI
+from TorneoToDF import TorneoToDF
 
 
 def df_to_html(df):

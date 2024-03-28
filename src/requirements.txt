@@ -3,7 +3,6 @@ beautifulsoup4==4.12.3
 cachetools==5.3.3
 certifi==2024.2.2
 charset-normalizer==3.3.2
-google==3.0.0
 google-api-core==2.18.0
 google-api-python-client==2.123.0
 google-auth==2.29.0

@@ -2,7 +2,7 @@ import datetime
 
 from Squadra import Squadra
 from Style import SPACE_SQUADRA_NOME, SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ, SPACE_ORA_INIZIO_FINE, NOMI_CAMPI, ID_CAMPI
-from src.support import Stato
+from support import Stato
 
 
 class Partita:

@@ -1,5 +1,5 @@
 from spreadsheet import calcetto
-from src.TorneoToCLI import TorneoToCLI
+from TorneoToCLI import TorneoToCLI
 
 if __name__ == "__main__":
     # create_connection("./db")

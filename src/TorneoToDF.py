@@ -1,8 +1,8 @@
 import pandas as pd
 
-from src.Partita import Partita
-from src.Style import NOMI_CAMPI, NOMI_TURNI
-from src.Torneo import Torneo
+from Partita import Partita
+from Style import NOMI_CAMPI, NOMI_TURNI
+from Torneo import Torneo
 
 
 class TorneoToDF(Torneo):

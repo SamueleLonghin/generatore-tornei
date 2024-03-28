@@ -1,7 +1,7 @@
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from src.config import SERVICE_ACCOUNT_SCOPES, SERVICE_ACCOUNT_CREDENTIALS, BASE_FOLDER, SPREADSHEET_NAME, \
+from config import SERVICE_ACCOUNT_SCOPES, SERVICE_ACCOUNT_CREDENTIALS, BASE_FOLDER, SPREADSHEET_NAME, \
     ORIGINAL_SPREADSHEET_ID, SHEET_NAME
 
 

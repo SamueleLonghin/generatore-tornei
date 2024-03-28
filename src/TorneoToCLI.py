@@ -1,8 +1,8 @@
-from src.Girone import Girone
-from src.Partita import Partita
-from src.Squadra import Squadra
-from src.Style import SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ, NOMI_CAMPI, SPACE_SQUADRA_NOME, SPACE_PARTITA_DA_SQUADRA
-from src.TorneoToDF import TorneoToDF
+from Girone import Girone
+from Partita import Partita
+from Squadra import Squadra
+from Style import SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ, NOMI_CAMPI, SPACE_SQUADRA_NOME, SPACE_PARTITA_DA_SQUADRA
+from TorneoToDF import TorneoToDF
 
 
 class TorneoToCLI(TorneoToDF):
