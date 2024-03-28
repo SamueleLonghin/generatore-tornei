@@ -1,4 +1,4 @@
-SERVICE_ACCOUNT_CREDENTIALS = 'src/sa.json'
+SERVICE_ACCOUNT_CREDENTIALS = 'sa.json'
 SERVICE_ACCOUNT_SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
 BASE_FOLDER = "1mM9Xn39B_TFVWspZlT2DyQViSwBnOJ-F"
 SHEET_NAME = "Squadre"
