@@ -8,12 +8,10 @@ WORKDIR /app
 
 # Copio il file requirements, va fatto anche se ho il volume
 COPY requirements.txt /app/
+
 # Installa le dipendenze
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY . /app
 
-#WORKDIR /app
-
-#CMD ["ls"]
 CMD ["flask", "run", "--host=0.0.0.0"]
