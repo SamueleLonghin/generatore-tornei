@@ -1,3 +1,5 @@
+from flask import render_template
+
 from Style import NOMI_TURNI, NOMI_CAMPI
 from TorneoToDF import TorneoToDF
 
@@ -54,3 +56,13 @@ class TorneoToHTML(TorneoToDF):
 
         gironi = ''.join(['<th> {} </th>'.format(c) for c in gironi])
         return f"<table> <thead> <tr> {gironi} </tr> </thead> <tbody> <tr> {html} </tr> </tbody> </table>"
+
+    def toHTML(self):
+        sq_per_gir = self.html_squadre_per_girone()
+        pa_per_sq = self.html_partite_per_squadra()
+        pa_per_cm = self.html_partite_per_campi()
+        pa_per_tu = self.html_partite_per_turni()
+        pa_per_gi = self.html_partite_per_gironi()
+
+        return render_template("torneo.html", title=self.nome,
+                               html=sq_per_gir + pa_per_sq + pa_per_cm + pa_per_tu + pa_per_gi)

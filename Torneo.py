@@ -42,7 +42,7 @@ class Torneo:
                 data.loc[len(data)] = [f"Pad {i + 1}"] * data.loc[0].size
         self.squadre = Squadra.from_df(data)
         self.genera_gironi()
-        self.partite = appiattisci([g.partite for g in self.gironi])
+        self.partite = sorted(appiattisci([g.partite for g in self.gironi]), key=lambda x: x.__hash__())
         self.ordina_partite()
 
     def genera_gironi(self):
@@ -62,10 +62,11 @@ class Torneo:
         usati = [0] * self.n_squadre
         while len(pl) > 0:
             if len(plt) == 0:
+                # Se non sono disponibili partite evitando turni di riposo,
+                # creo un turno di riposo
                 p = Partita(None, None, self)
             else:
                 p = plt.pop()
-                # pt = tuple(p)
                 # incremento usati
                 usati[p.s1.id] += 1
                 usati[p.s2.id] += 1
@@ -91,18 +92,10 @@ class Torneo:
     @property
     def partite_df(self):
         return [p.to_df_row() for p in self.partite_ordinate]
-        # pl = []
-        # p: Partita
-        # for p in self.partite_ordinate:
-        #     pl.append(p.to_df_row())
-        # return pd.DataFrame(pl)
 
     @property
     def partite_list(self):
         return [tuple(p) for p in self.partite_ordinate]
-
-    def get_partite_per_turno(self, turno):
-        return self.partite_ordinate[self.n_campi * turno: self.n_campi * (turno + 1)]
 
     @property
     def partite_per_turno(self):
@@ -127,7 +120,7 @@ class Torneo:
         file.close()
 
 
-def appiattisci(p):
+def appiattisci(p) -> list:
     return [y for x in p for y in x]
 
 

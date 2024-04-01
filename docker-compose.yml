@@ -4,5 +4,8 @@ services:
     build: .
     ports:
       - "90:5000"
-    volumes:
-      - ./src:/app
+#    volumes:
+#      - ./app:/app
+#      - dati:/app
+#volumes:
+#  dati:

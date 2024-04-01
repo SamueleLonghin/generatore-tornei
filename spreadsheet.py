@@ -18,8 +18,9 @@ def spreadsheet_range(spreadsheet_id, data_to_pull):
     return result.get("values", [[None]])
 
 
-def spreadsheet_cell(spreadsheet_id, cell):
-    return spreadsheet_range(spreadsheet_id, cell)[0][0]
+def spreadsheet_cell(spreadsheet_id, cell, default=""):
+    value = spreadsheet_range(spreadsheet_id, cell)[0][0]
+    return value if value else default
 
 
 def spreadsheet_to_df(spreadsheet_id, data_to_pull):

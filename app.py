@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, jsonify
 
-
 from GoogleService import GoogleService
 from TorneoToHTML import TorneoToHTML
 from config import SHEET_NAME, RANGE_TEAM_NAMES
@@ -12,7 +11,7 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 
@@ -56,13 +55,12 @@ def torneo(spreadsheet_id):
 def fetch(spreadsheet_id):
     squadre = spreadsheet_to_df(spreadsheet_id, SHEET_NAME + RANGE_TEAM_NAMES)
     name = spreadsheet_name(spreadsheet_id)
-    print("Tome Torneo:", name)
-    n_gironi = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K4"))
-    n_campi = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K3"))
-    n_sq_per_girone = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K5"))
-    ora_inizio = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K6"))
-    min_inizio = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K7"))
-    durata_partita = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K8"))
+    n_gironi = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K4", 3))
+    n_campi = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K3", 2))
+    n_sq_per_girone = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K5", 4))
+    ora_inizio = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K6", 12))
+    min_inizio = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K7", 0))
+    durata_partita = int(spreadsheet_cell(spreadsheet_id, SHEET_NAME + "!K8", 30))
 
     torneo = TorneoToHTML(name, squadre, n_gironi=n_gironi, n_campi=n_campi,
                           n_sq_per_girone=n_sq_per_girone,
@@ -70,11 +68,4 @@ def fetch(spreadsheet_id):
                           ore=ora_inizio,
                           durata_partita=durata_partita)
 
-    sq_per_gir = torneo.html_squadre_per_girone()
-    pa_per_sq = torneo.html_partite_per_squadra()
-    pa_per_cm = torneo.html_partite_per_campi()
-    pa_per_tu = torneo.html_partite_per_turni()
-    pa_per_gi = torneo.html_partite_per_gironi()
-
-    return render_template("torneo.html", title=name, html=sq_per_gir + pa_per_sq + pa_per_cm + pa_per_tu + pa_per_gi)
-
+    return torneo.toHTML()

@@ -15,7 +15,7 @@ class Girone:
         self.squadre = squadre
         self.genera_partite()
 
-    def genera_partite(self):
+    def genera_partite(self) -> [Partita]:
         ps = set()
         for s1 in self.squadre:
             for s2 in self.squadre:
@@ -25,16 +25,3 @@ class Girone:
                     s1.aggiungi_partita(p)
                     s2.aggiungi_partita(p)
         self.partite = list(ps)
-
-    # def stampa_partite(self):
-    #     for p in self.partite:
-    #         print(p)
-
-    # def stampa_partite_squadre(self):
-    #     s: Squadra
-    #     for s in self.squadre:
-    #         s.stampa_partite(self.torneo)
-
-    # def stampa_squadre(self):
-    #     for s in self.squadre:
-    #         print(f"{s.nome}")

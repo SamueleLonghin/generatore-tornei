@@ -18,7 +18,8 @@ class Partita:
     stato = Stato.PROGRAMMATA
 
     def __hash__(self):
-        return hash(k for k in (self.s1.id, self.s2.id))
+        return hash((self.s1.id, self.s2.id))
+        # return hash(k for k in (self.s1.id, self.s2.id))
 
     def __init__(self, s1, s2, girone):
         self.s1 = s1
