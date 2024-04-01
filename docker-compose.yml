@@ -1,6 +1,7 @@
 version: '3'
 services:
   web:
+    container_name: generatore_tornei_web
     build: .
     ports:
       - "90:5000"
