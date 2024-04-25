@@ -4,6 +4,6 @@ services:
     container_name: generatore_tornei_web
     build: .
     ports:
-      - "90:4000"
+      - "90:5000"
     volumes:
-      - ./sa.json:/app/sa.json
+      - ./:/app
