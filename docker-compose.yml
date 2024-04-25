@@ -6,4 +6,4 @@ services:
     ports:
       - "90:4000"
     volumes:
-      - ./sa.json:/app
+      - ./sa.json:/app/sa.json
