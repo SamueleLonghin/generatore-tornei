@@ -57,12 +57,51 @@ class TorneoToHTML(TorneoToDF):
         gironi = ''.join(['<th> {} </th>'.format(c) for c in gironi])
         return f"<table> <thead> <tr> {gironi} </tr> </thead> <tbody> <tr> {html} </tr> </tbody> </table>"
 
+    def html_orari(self):
+        data = [["La prima partita inizia alle", self.orario_inizio],
+                ["Per la fase a gironi sono necessari", f"{self.n_turni} turni"],
+                ["L'ultima partita della fase a gironi termina alle", self.orario_fine_gironi]]
+        html = ""
+        for th, td in data:
+            html += f"<tr><th> {th} </th> <td> {td} </td> </tr>"
+
+        return f"<table class='table table-striped'><tbody> {html} </tbody></table>"
+
+    def html_info(self):
+        data = [["Numero Gironi", self.n_gironi],
+                ["Numero Campi", self.n_campi],
+                ["Numero Squadre per Girone", self.n_sq_per_girone],
+                ["Numero Turni", self.n_turni],
+                ["Durata Partita", self.durata_partita],
+                ]
+        html = ""
+        for th, td in data:
+            html += f"<tr><th> {th} </th> <td> {td} </td> </tr>"
+
+        return f"<table class='table table-striped'><tbody> {html} </tbody></table>"
+
     def toHTML(self):
         sq_per_gir = self.html_squadre_per_girone()
         pa_per_sq = self.html_partite_per_squadra()
         pa_per_cm = self.html_partite_per_campi()
         pa_per_tu = self.html_partite_per_turni()
         pa_per_gi = self.html_partite_per_gironi()
+        info = self.html_info()
+        orari = self.html_orari()
 
         return render_template("torneo.html", title=self.nome,
+                               info=info + orari,
                                html=sq_per_gir + pa_per_sq + pa_per_cm + pa_per_tu + pa_per_gi)
+
+    def getHTMLComponents(self):
+        sq_per_gir = self.html_squadre_per_girone()
+        pa_per_sq = self.html_partite_per_squadra()
+        pa_per_cm = self.html_partite_per_campi()
+        pa_per_tu = self.html_partite_per_turni()
+        pa_per_gi = self.html_partite_per_gironi()
+        info = self.html_info()
+        orari = self.html_orari()
+
+        return dict(title=self.nome,
+                    info=info + orari,
+                    html=sq_per_gir + pa_per_sq + pa_per_cm + pa_per_tu + pa_per_gi)

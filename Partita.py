@@ -10,8 +10,8 @@ class Partita:
     s2 = None
     set1 = 0
     set2 = 0
-    pt1 = 0
-    pt2 = 0
+    pt1 = None
+    pt2 = None
     turno = None
     campo = None
     girone = None
@@ -109,13 +109,13 @@ class Partita:
 
     @classmethod
     def ora_inizio_partita(cls, torneo, turno):
-        ora = (torneo.orario_inizio + datetime.timedelta(
-            minutes=torneo.durata_partita * turno)).time()
+        delta = datetime.timedelta(minutes=torneo.durata_partita * turno)
+        ora = (torneo.dataora_inizio + delta).time()
         return ora.strftime("%H:%M").center(5)
 
     @property
     def ora_fine(self):
-        ora = (self.girone.torneo.orario_inizio + datetime.timedelta(
+        ora = (self.girone.torneo.dataora_inizio + datetime.timedelta(
             minutes=self.girone.torneo.durata_partita * (self.turno + 1))).time()
         return ora.strftime("%H:%M").center(5)
 
@@ -135,8 +135,9 @@ class Partita:
             'sq2.nome': self.s2.nome,
             'turno': self.turno,
             'campo': self.campo,
+            'campo.nome': NOMI_CAMPI[self.campo],
             'pt1': self.pt1,
             'pt2': self.pt2,
-            'stato': self.stato,
+            'stato': str(self.stato),
             'girone': self.girone.id
         }

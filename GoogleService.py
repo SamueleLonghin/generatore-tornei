@@ -1,8 +1,7 @@
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from config import SERVICE_ACCOUNT_SCOPES, SERVICE_ACCOUNT_CREDENTIALS, BASE_FOLDER, SPREADSHEET_NAME, \
-    ORIGINAL_SPREADSHEET_ID, SHEET_NAME
+from config import SERVICE_ACCOUNT_SCOPES, SERVICE_ACCOUNT_CREDENTIALS
 
 
 class GoogleService:
@@ -13,41 +12,3 @@ class GoogleService:
                                                                                  scopes=self.scopes)
         self.sheets_service = build("sheets", "v4", credentials=self.credentials)
         self.drive_service = build('drive', 'v3', credentials=self.credentials)
-
-    def create_spreadsheet(self, title=SPREADSHEET_NAME):
-        spreadsheet = self.sheets_service.spreadsheets().create(body={
-            'properties': {'title': title},
-            'sheets': [
-                {
-                    'properties': {
-                        'title': SHEET_NAME,
-                    }
-                }
-            ]
-        }).execute()
-        self.drive_service.files().update(
-            fileId=spreadsheet['spreadsheetId'],
-            addParents=BASE_FOLDER,
-            removeParents='root',
-            fields='id, parents'
-        ).execute()
-
-        return spreadsheet['spreadsheetId']
-
-    def clone_spreadsheet(self, title=SPREADSHEET_NAME):
-        copied_file = {'name': title, 'parents': [BASE_FOLDER]}
-
-        file = self.drive_service.files().copy(
-            fileId=ORIGINAL_SPREADSHEET_ID,
-            body=copied_file,
-        ).execute()
-
-        print(file)
-        return file['id']
-
-    def share_spreadsheet(self, spreadsheet_id):
-        self.drive_service.permissions().create(
-            fileId=spreadsheet_id,
-            body={'type': 'anyone', 'role': 'writer'},
-            fields='id'
-        ).execute()

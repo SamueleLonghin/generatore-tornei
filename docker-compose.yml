@@ -6,7 +6,7 @@ services:
     ports:
       - "90:5000"
 #    volumes:
-#      - ./app:/app
+#      - ./app/sa.json:/app
 #      - dati:/app
 #volumes:
 #  dati:

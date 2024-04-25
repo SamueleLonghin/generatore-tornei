@@ -26,8 +26,8 @@ class TorneoToDF(Torneo):
         turni = []
         cols = ['Casa', 'Campo', 'Ospite', 'Inizio', 'Fine', 'Turno']
         for i in range(self.n_turni):
-            turno = [[p.s1.nome, p.campo, p.s2.nome, p.ora_inizio, p.ora_fine, NOMI_TURNI[i]] for p in
-                     self.partite_per_turno[i]]
+            turno = [[p.s1.nome, p.campo, p.s2.nome, p.ora_inizio, p.ora_fine, NOMI_TURNI[i]] if p.s1 is not None else
+                     ["-"] * 6 for p in self.partite_per_turno[i]]
             df = pd.DataFrame(turno, columns=cols)
             turni.append(df)
         return pd.concat(turni, ignore_index=True)
@@ -36,7 +36,8 @@ class TorneoToDF(Torneo):
         campi = []
         cols = ['Casa', 'Orario', 'Ospite']
         for i in range(self.n_campi):
-            campo = [[p.s1.nome, p.ora_inizio, p.s2.nome] for p in self.partite_campi[i]]
+            campo = [[p.s1.nome, p.ora_inizio, p.s2.nome] if p.s1 is not None else ["-"] * 3 for p in
+                     self.partite_campi[i]]
             df = pd.DataFrame(campo, columns=cols)
             df['Campo'] = NOMI_CAMPI[i]
             campi.append(df)

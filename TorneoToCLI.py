@@ -54,6 +54,11 @@ class TorneoToCLI(TorneoToDF):
         for g in self.gironi:
             print(g.nome.center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
             s: Squadra
-            for s in self.squadre:
+            for s in g.squadre:
                 s.stampa_partite(self)
             print("-" * SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ)
+
+    def stampa_orari(self):
+        print("La prima partita inizia alle ", self.orario_inizio)
+        print("Sono necessari ", self.n_turni, "turni per la fase a gironi")
+        print("L'ultima partita della fase a gironi termina alle", self.orario_fine_gironi)

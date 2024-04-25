@@ -1,5 +1,6 @@
 from Partita import Partita
 from Squadra import Squadra
+import pandas as pd
 
 
 class Girone:
@@ -25,3 +26,7 @@ class Girone:
                     s1.aggiungi_partita(p)
                     s2.aggiungi_partita(p)
         self.partite = list(ps)
+
+    @property
+    def partite_df(self) -> pd.DataFrame:
+        return pd.DataFrame([p.to_df_row() for p in self.partite])

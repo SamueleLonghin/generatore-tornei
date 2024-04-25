@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title | safe }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+
+<h1 class="text-center">{{ title|safe }}</h1>
+
+<form id="configForm" method="GET" action="/custom/{{ params['spreadsheet_id'] }}/view">
+    <input type="hidden" value="{{ params['spreadsheet_id'] }}" name="params[spreadsheet_id]">
+    <input type="hidden" value="{{ params['full_range_teams_names'] }}" name="params[full_range_teams_names]">
+    <table class="table" id="configTable">
+        <thead>
+        <tr>
+            <th>nome</th>
+            <th>n_gironi</th>
+            <th>n_campi</th>
+            <th>n_sq_per_girone</th>
+            <th>ore</th>
+            <th>minuti</th>
+            <th>durata_partita</th>
+            <th>padding</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Riga predefinita con i preset -->
+        {#        <tr>#}
+        {#            <td><input type="number" class="form-control" name="n_gironi[]"></td>#}
+        {#            <td><input type="number" class="form-control" name="n_campi[]"></td>#}
+        {#            <td><input type="number" class="form-control" name="n_sq_per_girone[]"></td>#}
+        {#            <td><input type="number" class="form-control" name="ore[]"></td>#}
+        {#            <td><input type="number" class="form-control" name="minuti[]"></td>#}
+        {#            <td><input type="number" class="form-control" name="durata_partita[]"></td>#}
+        {#            <td><input type="checkbox" class="form-check-input" name="padding[]"></td>#}
+        {#        </tr>#}
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" onclick="addRow()">Aggiungi Configurazione</button>
+    <button type="submit" class="btn btn-success">Invia Configurazioni</button>
+</form>
+</body>
+</html>
+
+<script>
+    let presets;
+
+    // Funzione per aggiungere una configurazione alla tabella
+    function addRow() {
+        const table = document.getElementById('configTable').getElementsByTagName('tbody')[0];
+        const rowIndex = table.rows.length;
+        const newRow = table.insertRow(rowIndex);
+        const presetNames = ['nome', 'n_gironi', 'n_campi', 'n_sq_per_girone', 'ore', 'minuti', 'durata_partita', 'padding'];
+
+        presetNames.forEach((preset, index) => {
+            const newCell = newRow.insertCell(index);
+            let inputType = 'number';
+            if (preset === 'padding') inputType = 'checkbox';
+            else if (preset === 'nome') inputType = 'text';
+
+            let inputElement = document.createElement('input');
+            inputElement.type = inputType;
+            inputElement.name = `conf[${rowIndex}][${preset}]`;  // Struttura conf[i][preset]
+            inputElement.className = (inputType === 'checkbox') ? 'form-check-input' : 'form-control';
+
+            if (inputType === 'checkbox') {
+                inputElement.checked = !!presets[preset];
+            } else {
+                inputElement.required = true
+                inputElement.value = presets[preset] || '';
+            }
+            newCell.appendChild(inputElement);
+        });
+    }
+
+    window.onload = function () {
+        presets = {
+            nome: "{{ initial_presets['nome'] }}",
+            n_gironi: {{ initial_presets['n_gironi'] }},
+            n_campi: {{ initial_presets['n_campi'] }},
+            n_sq_per_girone: {{ initial_presets['n_sq_per_girone'] }},
+            ore: {{ initial_presets['ore'] }},
+            minuti: {{ initial_presets['minuti'] }},
+            durata_partita: {{ initial_presets['durata_partita'] }},
+            padding: {{ 'true' if initial_presets['padding'] else 'false' }}
+        };
+        addRow();
+    };
+</script>
