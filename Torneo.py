@@ -193,15 +193,15 @@ class Torneo:
         lettera_fine = chr(ord('A') + num_columns)
         for girone in self.gironi:
             # Rinomino le colonne
-            df = girone.partite_df[['sq1.nome', 'sq2.nome', 'pt1', 'pt2', 'campo.nome']].rename(
+            df = girone.partite_df[cols].rename(
                 columns={'sq1.nome': "Casa", 'sq2.nome': "Ospite", 'pt1': "Punti Casa", 'pt2': "Punti Ospite",
-                         'campo.nome': "Campo"}).fillna('')
+                         'campo.nome': "Campo", 'ora': "Orario di Inizio"}).fillna('')
 
             # Ottengo il numero di partite
             num_partite = df.shape[0]
 
             # Unisco le celle e scrivo il titolo
-            title_range_alfa = f"{matches_sheet}!A{riga_titolo}:E{riga_titolo}"
+            title_range_alfa = f"{matches_sheet}!A{riga_titolo}:{lettera_fine}{riga_titolo}"
             # title_range = alpha_to_grid_range(spreadsheet_id, title_range_alfa)
 
             # range riga titolo
@@ -210,7 +210,7 @@ class Torneo:
                                          endRowIndex=riga_titolo,
                                          # Anche se è la stessa riga, dico quella successiva perchè la fine è esclusa
                                          startColumnIndex=0,  # Anche qui parte da 0, colonna A => 0
-                                         endColumnIndex=5  # Colonna in pos n_pos_punti +1
+                                         endColumnIndex=num_columns  # Colonna in pos n_pos_punti +1
                                          )
             # range riga titolo
             int_range = get_data_range(sheet_id,
@@ -218,14 +218,14 @@ class Torneo:
                                        endRowIndex=riga_titolo + 1,
                                        # Anche se è la stessa riga, dico quella successiva perchè la fine è esclusa
                                        startColumnIndex=0,  # Anche qui parte da 0, colonna A => 0
-                                       endColumnIndex=5  # Colonna in pos n_pos_punti +1
+                                       endColumnIndex=num_columns  # Colonna in pos n_pos_punti +1
                                        )
             # Range con tutto il Girone
             full_range = get_data_range(sheet_id,
                                         startRowIndex=riga_titolo - 1,  # Parto da 0, quindi riga 1 in excel => 0
                                         endRowIndex=riga_inizio_girone + num_partite,
                                         startColumnIndex=0,  # Anche qui parte da 0, colonna A => 0
-                                        endColumnIndex=5
+                                        endColumnIndex=num_columns
                                         # Colonna in pos n_pos_punti + 2 perchè c'è il totale
                                         )
             # Aggiusto la grafica:
@@ -244,7 +244,83 @@ class Torneo:
 
             # Stampo la tabella
             df_to_spreadsheet(spreadsheet_id,
-                              matches_sheet + f"!A{riga_inizio_girone}:E", df)
+                              matches_sheet + f"!A{riga_inizio_girone}:{lettera_fine}", df)
+
+            # Aggiorno i contatori
+            riga_titolo = riga_inizio_girone + num_partite + 2
+            riga_inizio_girone = riga_inizio_girone + num_partite + 3
+
+        run(spreadsheet_id,
+            set_columns_width(dict(sheetId=sheet_id, startIndex=0, endIndex=2), 200)
+            )
+
+    def campi_to_spreadsheet(self, spreadsheet_id=None, sheet_name="CAMPI"):
+        if not spreadsheet_id:
+            spreadsheet_id = self.spreadsheet_id
+
+        # Creo il foglio
+        sheet_id = create_sheet_if_not_exists(spreadsheet_id, sheet_name)
+        riga_titolo = 1
+        riga_inizio_girone = 2
+
+        cols = ['sq1.nome', 'sq2.nome', 'pt1', 'pt2', 'campo.nome', 'ora']
+        num_columns = len(cols)
+        lettera_fine = chr(ord('A') + num_columns)
+        for camp in self.partite_campi:
+            print(camp)
+            # Rinomino le colonne
+            df = camp.ca[cols].rename(
+                columns={'sq1.nome': "Casa", 'sq2.nome': "Ospite", 'pt1': "Punti Casa", 'pt2': "Punti Ospite",
+                         'campo.nome': "Campo", 'ora': "Orario di Inizio"}).fillna('')
+
+            # Ottengo il numero di partite
+            num_partite = df.shape[0]
+
+            # Unisco le celle e scrivo il titolo
+            title_range_alfa = f"{sheet_name}!A{riga_titolo}:{lettera_fine}{riga_titolo}"
+            # title_range = alpha_to_grid_range(spreadsheet_id, title_range_alfa)
+
+            # range riga titolo
+            title_range = get_data_range(sheet_id,
+                                         startRowIndex=riga_titolo - 1,  # Parto da 0, quindi riga 1 in excel => 0
+                                         endRowIndex=riga_titolo,
+                                         # Anche se è la stessa riga, dico quella successiva perchè la fine è esclusa
+                                         startColumnIndex=0,  # Anche qui parte da 0, colonna A => 0
+                                         endColumnIndex=num_columns  # Colonna in pos n_pos_punti +1
+                                         )
+            # range riga titolo
+            int_range = get_data_range(sheet_id,
+                                       startRowIndex=riga_titolo,  # Parto da 0, quindi riga 1 in excel => 0
+                                       endRowIndex=riga_titolo + 1,
+                                       # Anche se è la stessa riga, dico quella successiva perchè la fine è esclusa
+                                       startColumnIndex=0,  # Anche qui parte da 0, colonna A => 0
+                                       endColumnIndex=num_columns  # Colonna in pos n_pos_punti +1
+                                       )
+            # Range con tutto il Girone
+            full_range = get_data_range(sheet_id,
+                                        startRowIndex=riga_titolo - 1,  # Parto da 0, quindi riga 1 in excel => 0
+                                        endRowIndex=riga_inizio_girone + num_partite,
+                                        startColumnIndex=0,  # Anche qui parte da 0, colonna A => 0
+                                        endColumnIndex=num_columns
+                                        # Colonna in pos n_pos_punti + 2 perchè c'è il totale
+                                        )
+            # Aggiusto la grafica:
+            # Unisco le prime celle
+            # Allineo al centro nelle celle dei titoli
+            # Imposto i bordi
+            run(spreadsheet_id,
+                mergeCells(title_range),
+                setTextFormat(title_range, font_size=18, bold=True),
+                alignCenterCells(title_range),
+                setTextFormat(int_range, font_size=None, bold=True),
+                alignCenterCells(int_range),
+                setBorders(full_range)
+                )
+            writeCells(spreadsheet_id, title_range_alfa, "Partite del " + camp)
+
+            # Stampo la tabella
+            df_to_spreadsheet(spreadsheet_id,
+                              sheet_name + f"!A{riga_inizio_girone}:{lettera_fine}", df)
 
             # Aggiorno i contatori
             riga_titolo = riga_inizio_girone + num_partite + 2
