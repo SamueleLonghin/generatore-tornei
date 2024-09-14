@@ -69,7 +69,6 @@ def custom_torneo(spreadsheet_id):
     heads = []
     values = []
     infos = []
-    print(dati)
     squadre = spreadsheet_to_df(spreadsheet_id, params['full_range_teams_names'])
     for i, conf in configurations.items():
         t = TorneoToHTML(squadre=squadre, spreadsheet_id=spreadsheet_id, **conf)
