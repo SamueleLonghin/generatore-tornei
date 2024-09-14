@@ -26,8 +26,10 @@ class TorneoToDF(Torneo):
         turni = []
         cols = ['Casa', 'Campo', 'Ospite', 'Inizio', 'Fine', 'Turno']
         for i in range(self.n_turni):
-            turno = [[p.s1.nome, p.campo, p.s2.nome, p.ora_inizio, p.ora_fine, NOMI_TURNI[i]] if p.s1 is not None else
-                     ["-"] * 6 for p in self.partite_per_turno[i]]
+            turno = [[p.s1.nome, NOMI_CAMPI[p.campo], p.s2.nome, p.ora_inizio, p.ora_fine,
+                      NOMI_TURNI[i]] if p.s1 is not None else
+                     [["-"] * 3, Partita.ora_inizio_partita(self, i), Partita.ora_fine_partita(self, i), NOMI_TURNI[i]]
+                     for p in self.partite_per_turno[i]]
             df = pd.DataFrame(turno, columns=cols)
             turni.append(df)
         return pd.concat(turni, ignore_index=True)
