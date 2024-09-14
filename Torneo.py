@@ -48,7 +48,7 @@ class Torneo:
         if padding:
             agg = (self.n_gironi * self.n_sq_per_girone) - len(squadre)
             for i in range(agg):
-                squadre.loc[len(squadre)] = [f"Pad {i + 1}"] * squadre.loc[0].size
+                squadre.loc[len(squadre)] = [f"Pad {i + 1}"] * squadre.columns.size
         self.squadre = Squadra.from_df(squadre)
         self.genera_gironi()
         self.partite = sorted(appiattisci([g.partite for g in self.gironi]), key=lambda x: x.__hash__())
