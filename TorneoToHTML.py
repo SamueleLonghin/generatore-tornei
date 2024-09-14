@@ -25,12 +25,9 @@ class TorneoToHTML(TorneoToDF):
         df = self.df_partite_per_turni()
         html = ""
         turni = ""
-        print(df)
         for ((groupName, groupDf), i) in zip(df.groupby('Turno'), range(self.n_turni)):
             inizio = groupDf.iloc[0]['Inizio']
             fine = groupDf.iloc[0]['Fine']
-            print(groupName)
-            print(groupDf)
             groupDf = groupDf.drop(['Turno', 'Inizio', 'Fine'], axis=1)
             html += f"<tr> <th> {groupName} </th> <td> {inizio} - {fine} </td> <td>{df_to_html(groupDf)}</td> </tr>"
         return f"<table> <thead> <tr> {turni} </tr> </thead> <tbody>  {html} </tbody> </table>"
