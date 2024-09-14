@@ -134,6 +134,7 @@ class Partita:
             'sq1.nome': self.s1.nome,
             'sq2.nome': self.s2.nome,
             'turno': self.turno,
+            'ora': self.ora_inizio,
             'campo': self.campo,
             'campo.nome': NOMI_CAMPI[self.campo],
             'pt1': self.pt1,
