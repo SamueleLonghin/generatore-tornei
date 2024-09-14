@@ -93,6 +93,9 @@ class Torneo:
             escludere = [sq for pa in partite[i_da:] for sq in pa]
             plt = get_partite_possibili(escludere, pl, usati)
         self.partite_ordinate = partite
+        if len(partite) % self.n_campi != 0:
+            print("Aggiungo un turno")
+            self.n_turni += 1
 
     @property
     def n_squadre(self):
