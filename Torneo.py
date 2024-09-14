@@ -187,6 +187,10 @@ class Torneo:
         sheet_id = create_sheet_if_not_exists(spreadsheet_id, matches_sheet)
         riga_titolo = 1
         riga_inizio_girone = 2
+
+        cols = ['sq1.nome', 'sq2.nome', 'pt1', 'pt2', 'campo.nome', 'ora']
+        num_columns = len(cols)
+        lettera_fine = chr(ord('A') + num_columns)
         for girone in self.gironi:
             # Rinomino le colonne
             df = girone.partite_df[['sq1.nome', 'sq2.nome', 'pt1', 'pt2', 'campo.nome']].rename(
