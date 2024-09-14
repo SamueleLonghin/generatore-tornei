@@ -30,7 +30,8 @@ class Torneo:
 
     def __init__(self, nome, squadre: pd.DataFrame, n_gironi, n_campi, n_sq_per_girone=None, padding=True,
                  ore=None, minuti=None, durata_partita=30, spreadsheet_id=None,
-                 dataora_inizio=datetime.datetime(hour=14, minute=30, day=1, month=1, year=2000)):
+                 dataora_inizio=datetime.datetime(hour=14, minute=30, day=1, month=1, year=2000),
+                 full_range_teams_names=None):
         self.nome = nome
         self.n_campi = int(n_campi)
         self.n_gironi = int(n_gironi)
