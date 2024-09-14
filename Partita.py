@@ -113,6 +113,10 @@ class Partita:
         ora = (torneo.dataora_inizio + delta).time()
         return ora.strftime("%H:%M").center(5)
 
+    @classmethod
+    def ora_fine_partita(cls, torneo, turno):
+        return cls.ora_inizio_partita(torneo, turno + 1)
+
     @property
     def ora_fine(self):
         ora = (self.girone.torneo.dataora_inizio + datetime.timedelta(
