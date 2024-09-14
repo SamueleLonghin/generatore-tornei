@@ -48,14 +48,12 @@ class TorneoToHTML(TorneoToDF):
     def html_squadre_per_girone(self):
         df = self.df_squadre_per_girone()
         html = ""
-        gironi = []
         for (groupName, groupDf) in df.groupby('Girone'):
-            gironi.append(groupDf.iloc[0]['Girone'])
             groupDf = groupDf.drop('Girone', axis=1)
+            groupDf.rename(columns={'Squadra': groupName}, inplace=True)
             html += f"<td>{df_to_html(groupDf)}</td>"
 
-        gironi = ''.join(['<th> {} </th>'.format(c) for c in gironi])
-        return f"<table> <thead> <tr> {gironi} </tr> </thead> <tbody> <tr> {html} </tr> </tbody> </table>"
+        return f"<table> <tbody> <tr> {html} </tr> </tbody> </table>"
 
     def html_orari(self):
         data = [["La prima partita inizia alle", self.orario_inizio],
