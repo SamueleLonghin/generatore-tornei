@@ -21,14 +21,14 @@
     <table class="table" id="configTable">
         <thead>
         <tr>
-            <th>nome</th>
-            <th>n_gironi</th>
-            <th>n_campi</th>
-            <th>n_sq_per_girone</th>
-            <th>ore</th>
-            <th>minuti</th>
-            <th>durata_partita</th>
-            <th>padding</th>
+            <th>Nome della Versione</th>
+            <th>Numero di Gironi</th>
+            <th>Numero di Campi</th>
+            <th>Numero di Squadre per ogni Girone</th>
+            <th>Ora di Inizio</th>
+            <th>Minuto di Inizio</th>
+            <th>Durata Partita</th>
+            <th>Padding (aggiunta di squadre se necessarie)</th>
         </tr>
         </thead>
         <tbody>
@@ -74,8 +74,12 @@
             if (inputType === 'checkbox') {
                 inputElement.checked = !!presets[preset];
             } else {
-                inputElement.required = true
-                inputElement.value = presets[preset] || '';
+                if (preset in presets) {
+                    inputElement.required = true
+                    inputElement.value = presets[preset];
+                } else {
+                    console.log(presets)
+                }
             }
             newCell.appendChild(inputElement);
         });
