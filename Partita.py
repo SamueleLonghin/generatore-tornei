@@ -15,16 +15,17 @@ class Partita:
     turno = None
     campo = None
     girone = None
+    torneo = None
     stato = Stato.PROGRAMMATA
 
     def __hash__(self):
         return hash((self.s1.id, self.s2.id))
-        # return hash(k for k in (self.s1.id, self.s2.id))
 
-    def __init__(self, s1, s2, girone):
+    def __init__(self, s1, s2, girone, torneo):
         self.s1 = s1
         self.s2 = s2
         self.girone = girone
+        self.torneo = torneo
 
     def __contains__(self, item):
         if type(item) == int:
@@ -105,22 +106,16 @@ class Partita:
 
     @property
     def ora_inizio(self):
-        return Partita.ora_inizio_partita(self.girone.torneo, self.turno)
+        return Partita.ora_inizio_partita(self.torneo, self.turno)
 
     @classmethod
     def ora_inizio_partita(cls, torneo, turno):
-        delta = datetime.timedelta(minutes=torneo.durata_partita * turno)
-        ora = (torneo.dataora_inizio + delta).time()
-        return ora.strftime("%H:%M").center(5)
-
-    @classmethod
-    def ora_fine_partita(cls, torneo, turno):
-        return cls.ora_inizio_partita(torneo, turno + 1)
+        return torneo.ora_inizio_turno(turno).strftime("%H:%M").center(5)
 
     @property
     def ora_fine(self):
-        ora = (self.girone.torneo.dataora_inizio + datetime.timedelta(
-            minutes=self.girone.torneo.durata_partita * (self.turno + 1))).time()
+        ora = (self.torneo.dataora_inizio + datetime.timedelta(
+            minutes=self.torneo.durata_partita * (self.turno + 1))).time()
         return ora.strftime("%H:%M").center(5)
 
     def altra(self, s):
@@ -144,5 +139,5 @@ class Partita:
             'pt1': self.pt1,
             'pt2': self.pt2,
             'stato': str(self.stato),
-            'girone': self.girone.id
+            'girone': self.girone.id if self.girone else None
         }

@@ -48,7 +48,7 @@ class TorneoToCLI(TorneoToDF):
         print("Partite per Squadre".center(SPACE_RIGA_SQ_ORA_INIZIO_FINE_SQ))
         print("".center(SPACE_SQUADRA_NOME), end='')
         for i in range(self.n_turni + 1):
-            print(Partita.ora_inizio_partita(self, i).center(SPACE_PARTITA_DA_SQUADRA), end='')
+            print(self.ora_inizio_turno(i).center(SPACE_PARTITA_DA_SQUADRA), end='')
         print()
         g: Girone
         for g in self.gironi:

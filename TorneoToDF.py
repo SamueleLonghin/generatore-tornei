@@ -1,6 +1,5 @@
 import pandas as pd
 
-from Partita import Partita
 from Style import NOMI_CAMPI, NOMI_TURNI
 from Torneo import Torneo
 
@@ -28,7 +27,7 @@ class TorneoToDF(Torneo):
         for i in range(self.n_turni):
             turno = [[p.s1.nome, NOMI_CAMPI[p.campo], p.s2.nome, p.ora_inizio, p.ora_fine,
                       NOMI_TURNI[i]] if p.s1 is not None else
-                     [["-"] * 3, Partita.ora_inizio_partita(self, i), Partita.ora_fine_partita(self, i), NOMI_TURNI[i]]
+                     [["-"] * 3, self.ora_inizio_turno(i), self.ora_fine_turno(i), NOMI_TURNI[i]]
                      for p in self.partite_per_turno[i]]
             df = pd.DataFrame(turno, columns=cols)
             turni.append(df)
@@ -48,9 +47,9 @@ class TorneoToDF(Torneo):
 
     def df_partite_per_squadre(self):
         cols = ['Squadra', 'Girone']
-        c = [f"{Partita.ora_inizio_partita(self, i)}" for i in range(self.n_turni - 1)]
+        c = [f"{self.orario_inizio_turno(i)}" for i in range(self.n_turni - 1)]
         c += [
-            f"{Partita.ora_inizio_partita(self, self.n_turni - 1)} - {Partita.ora_fine_partita(self, self.n_turni - 1)}"
+            f"{self.orario_inizio_turno(self.n_turni - 1)} - {self.orario_fine_turno(self.n_turni - 1)}"
         ]
         cols += c
         df = pd.DataFrame(columns=cols)

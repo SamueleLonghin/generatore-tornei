@@ -21,7 +21,7 @@ class Girone:
         for s1 in self.squadre:
             for s2 in self.squadre:
                 if s2.id > s1.id:
-                    p = Partita(s1, s2, self)
+                    p = Partita(s1, s2, self, self.torneo)
                     ps.add(p)
                     s1.aggiungi_partita(p)
                     s2.aggiungi_partita(p)

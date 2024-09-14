@@ -69,11 +69,11 @@ class Torneo:
         pl = list(self.partite)
         plt = pl
         usati = [0] * self.n_squadre
-        while len(pl) > 0:
+        while len(pl) > 0 or (len(partite) % self.n_campi != 0):
             if len(plt) == 0:
                 # Se non sono disponibili partite evitando turni di riposo,
                 # creo un turno di riposo
-                p = Partita(None, None, self)
+                p = Partita(None, None, None, self)
             else:
                 p = plt.pop()
                 # incremento usati
@@ -124,7 +124,20 @@ class Torneo:
 
     @property
     def orario_fine_gironi(self):
-        return self.partite_ordinate[-1].ora_fine
+        return self.ora_fine_turno(self.n_turni - 1).strftime("%H:%M").center(5)
+
+    def ora_inizio_turno(self, turno):
+        delta = datetime.timedelta(minutes=self.durata_partita * turno)
+        return (self.dataora_inizio + delta).time()
+
+    def orario_inizio_turno(self, turno):
+        return self.ora_inizio_turno(turno).strftime("%H:%M").center(5)
+
+    def ora_fine_turno(self, turno):
+        return self.ora_inizio_turno(turno + 1)
+
+    def orario_fine_turno(self, turno):
+        return self.ora_fine_turno(turno).strftime("%H:%M").center(5)
 
     def squadra(self, id):
         if id is not None:
