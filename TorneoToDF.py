@@ -45,8 +45,11 @@ class TorneoToDF(Torneo):
         return pd.concat(campi, ignore_index=True)
 
     def df_partite_per_squadre(self):
-        cols = ['squadra', 'girone']
-        c = [Partita.ora_inizio_partita(self, i) for i in range(self.n_turni)]
+        cols = ['Squadra', 'Girone']
+        c = [f"{Partita.ora_inizio_partita(self, i)}" for i in range(self.n_turni - 1)]
+        c += [
+            f"{Partita.ora_inizio_partita(self, self.n_turni - 1)} - {Partita.ora_fine_partita(self, self.n_turni - 1)}"
+        ]
         cols += c
         df = pd.DataFrame(columns=cols)
         for g in self.gironi:
