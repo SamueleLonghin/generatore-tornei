@@ -2,27 +2,122 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask App</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
+<div class="container mt-5">
+    <h1 class="text-center">Generatore di Tornei</h1>
 
-<button id="btnCrea">Crea</button>
+    <div class="mt-5">
+        <h2>Crea un nuovo Torneo</h2>
+        <p>Questo strumento permette di creare un nuovo torneo, ti verrà creato un google Fogli nel quale potrai
+            inserire il nome delle tue squadre.
+            Nella parte destra del foglio di calcolo è presente una tabella con i parametri del torneo, cortesemente
+            compilala e poi torna in questa pagina per Pianificare il Torneo</p>
+        <button id="btnCrea" class="btn btn-success">Crea Torneo</button>
+        <div id="loadingMessage" class="alert alert-info d-none" role="alert">
+            Creazione del torneo in corso... per favore attendi.
+        </div>
+    </div>
 
-<form action="/fetchFORM" method="POST">
-    <label for="spreadsheetIDInput">SpreadSheet ID</label><input type="text" name="spreasheetID" id="spreadsheetIDInput">
-    <input type="submit">
-</form>
+    <div class="mt-5">
+        <h2>Pianifica un Torneo</h2>
+        <p>
+            In questa fase andiamo a prelevare le informazioni dal foglio di lavoro che hai già compilato per
+            pianificare il Torneo.
+            Compila il campo "Id Foglio" con l'id del foglio di lavoro. <a href="#" data-toggle="collapse"
+                                                                           data-target="#instructions"
+                                                                           aria-expanded="false"
+                                                                           aria-controls="instructions">
+            Se non sai come trovare l'id del foglio di lavoro segui queste istruzioni:
+        </a>
+        </p>
+
+        <!-- Collapsible instructions -->
+        <div class="collapse" id="instructions">
+            <div class="card card-body">
+                <ol>
+                    <li>Apri il foglio di lavoro su Google Sheets.</li>
+                    <li>Guarda la barra degli indirizzi del tuo browser. L'ID del foglio è la stringa di caratteri che
+                        si trova tra <code>/d/</code> e <code>/edit</code> nell'URL.
+                    </li>
+                    <pre>https://docs.google.com/spreadsheets/d/1dCgZ-qLN-FDAqrz0aZRDSCWNDWE_Z3SG5HGHvu2LgOQ/edit</pre>
+                    <li>In questo caso, l'ID del foglio è:</li>
+                    <pre>1dCgZ-qLN-FDAqrz0aZRDSCWNDWE_Z3SG5HGHvu2LgOQ</pre>
+                    <li>Copia l'ID e incollalo nel campo "Id Foglio" sul modulo della tua pagina.</li>
+                </ol>
+            </div>
+        </div>
+        <p>
+            Nota: Se hai appena creato un nuovo Torneo con il pulsante sopra, il campo "Id Foglio" sarà compilato
+            automaticamente.
+        </p>
+
+        <form class="form">
+            <div class="form-group mr-2">
+                <label for="spreadsheetIDInput" class="mr-2">Id Foglio</label>
+                <input type="text" name="spreasheetID" id="spreadsheetIDInput" class="form-control"
+                       placeholder="Inserisci l'ID" required>
+            </div>
+            {#            <h3 class="mt-4">Differenza tra i due pulsanti</h3>#}
+            <p>
+                Ora che abbiamo definito in quale torneo vogliamo lavorare abbiamo due opzioni
+            </p>
+            <ul>
+                <li>
+                    <button type="submit" formaction="/fetchFORM" formmethod="post" class="btn btn-success">
+                        Visualizza
+                    </button>
+                    Questo pulsante visualizza il torneo come è stato configurato nel foglio di
+                    lavoro. Utilizzalo se desideri vedere il risultato diretto della configurazione corrente.
+                </li>
+                <li>
+                    <button type="submit" formaction="/custom" formmethod="post" class="btn btn-info">Versione di
+                        Comparazione
+                    </button>
+                    Se vuoi esplorare diverse opzioni di configurazione e fare confronti tra di esse, utilizza questo
+                    strumento. Ti permette di visualizzare più configurazioni fianco a fianco per un confronto più
+                    approfondito.
+                </li>
+            </ul>
+
+
+        </form>
+    </div>
+</div>
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
     $('#btnCrea').click(function () {
+        // Disabilita il pulsante per evitare clic multipli
+        $(this).prop('disabled', true);
+        // Mostra il messaggio di caricamento
+        $('#loadingMessage').removeClass('d-none');
+
         $.ajax({
             type: "POST",
             url: "/crea",
             success: function (response) {
+                // Nascondi il messaggio di caricamento
+                $('#loadingMessage').addClass('d-none');
+                // Riabilita il pulsante
+                $('#btnCrea').prop('disabled', false);
+                // Imposta il valore del campo con l'ID del foglio di lavoro
                 $('#spreadsheetIDInput').val(response.id);
                 // Apre il nuovo URL in una nuova scheda
                 window.open(response.url, '_blank');
+            },
+            error: function () {
+                // In caso di errore, nascondi il messaggio di caricamento e riabilita il pulsante
+                $('#loadingMessage').addClass('d-none');
+                $('#btnCrea').prop('disabled', false);
+                alert('Si è verificato un errore durante la creazione del torneo. Riprova più tardi.');
             }
         });
     });

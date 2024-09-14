@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, jsonify, send_file, make_response
+from flask import Flask, render_template, request, jsonify, send_file, make_response, redirect
 
 from Eliminazione import Eliminazione
 from TorneoToHTML import TorneoToHTML
@@ -40,7 +40,7 @@ def fetchJSON():
 @app.route('/fetchFORM', methods=['POST'])
 def fetchFORM():
     spreadsheet_id = request.form['spreasheetID']
-    return fetch(spreadsheet_id)
+    return redirect(f"/torneo/{spreadsheet_id}")
 
 
 @app.route('/torneo/<spreadsheet_id>', methods=['GET'])
@@ -53,6 +53,12 @@ def custom(spreadsheet_id):
     params, config = TorneoToHTML.presetsFromSpreadsheet(spreadsheet_id)
     title = config['nome']
     return render_template('custom.html', title=title, initial_presets=config, params=params)
+
+
+@app.route('/custom', methods=['POST'])
+def custom_post():
+    spreadsheet_id = request.form['spreasheetID']
+    return redirect(f"/custom/{spreadsheet_id}")
 
 
 @app.route('/custom/<spreadsheet_id>/view', methods=['GET'])
