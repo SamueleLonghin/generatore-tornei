@@ -4,13 +4,16 @@ from secret import SPREADSHEET_ID
 from spreadsheet import calcetto, spreadsheet_to_df
 from TorneoToCLI import TorneoToCLI
 
+PICCOLI = "1ZhRBVJGiLdbE7ak9LaV6YKtxwbiquca-JR52wWG0rTo"
+GRANDI = "1aJYAhJ6Pe1IvaT_bNDR4mnG2rfGLEkSnksXQGXX8elQ"
+
 if __name__ == "__main__":
-    spreadsheet_id = "1_4bVk0UlmRALqKLRcIm_ZwrKGXw0STMHl3Ek_dFaE1s"
+    spreadsheet_id = GRANDI
     squadre = spreadsheet_to_df(spreadsheet_id)
-    torneo = TorneoToCLI("Torneo Ping Pong 2^ edizione", squadre, spreadsheet_id=spreadsheet_id,
-                         n_gironi=4,
-                         n_campi=4,
-                         n_sq_per_girone=11,
+    torneo = TorneoToCLI("Torneo Green", squadre, spreadsheet_id=spreadsheet_id,
+                         n_gironi=2,
+                         n_campi=2,
+                         n_sq_per_girone=3,
                          padding=True
                          )
 
@@ -43,6 +46,7 @@ if __name__ == "__main__":
     SPREADSHEET
     """
     torneo.partite_to_spreadsheet()
+    torneo.campi_to_spreadsheet()
     torneo.classifica_to_df()
 
     # print()
