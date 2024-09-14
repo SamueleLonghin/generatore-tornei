@@ -1,4 +1,5 @@
 import random
+import math
 
 from Torneo import Torneo
 
@@ -8,19 +9,18 @@ class Eliminazione:
     divisi = []
 
     def __init__(self, torneo):
+        self.tournament_data = dict(participant=[], stage=[], group=[], round=[], match=[], match_game=[])
         self.genera()
 
     def genera(self):
-        import math
         TEAMS_COUNT = 32
         GROUPS = ['A', 'B', 'C', 'D']
-        TEAMS_PER_GROUP = TEAMS_COUNT // len(GROUPS)  # Squadre per girone
+        GROUPS_COUNT = len(GROUPS)
+        TEAMS_PER_GROUP = TEAMS_COUNT // GROUPS_COUNT  # Squadre per girone
         TOTAL_ROUNDS = int(math.log2(TEAMS_COUNT))
         # Creo la struttura dati desiderata con i risultati nulli all'inizio
-        self.tournament_data = dict(participant=[], stage=[], group=[], round=[], match=[], match_game=[])
-        sq_id = 0
         partecipants = {}
-        for g in range(len(GROUPS)):
+        for g in range(GROUPS_COUNT):
             partecipants[GROUPS[g]] = []
             for s in range(TEAMS_PER_GROUP):
                 partecipants[GROUPS[g]].append({
@@ -56,33 +56,36 @@ class Eliminazione:
 
         groups_matches = {}
 
-        rivals = {'A': 'D', 'B': 'C', 'C': 'B', 'D': 'A'}
+        # Associo le rivalità, in ordine inverso (A->D, D->A, B->C, C->B)
+        rivals = {GROUPS[i]: GROUPS[GROUPS_COUNT - 1 - i] for i in range(GROUPS_COUNT)}
 
+        # Associo alle prime 4 di ogni girone le loro avversarie
         for i_g, g in enumerate(GROUPS):
             r = rivals[g]
             groups_matches[g] = []
             for i in range(TEAMS_PER_GROUP // 2):
                 f = TEAMS_PER_GROUP - 1 - i
-                print("Genero le partite della sq", i, "contro", f, "del girone ", g, "contro", r)
                 groups_matches[g].append((partecipants[g][i], partecipants[r][f]))
 
-        i = 0
-        ppq = []
-        for i_g in range(len(GROUPS)):
-            prima = groups_matches[GROUPS[i_g % len(GROUPS)]][i]
-            terza = groups_matches[GROUPS[(i_g + 1) % len(GROUPS)]][i + 2]
-            quarta = groups_matches[GROUPS[(i_g + 2) % len(GROUPS)]][i + 1]
-            seconda = groups_matches[GROUPS[(i_g + 3) % len(GROUPS)]][i + 3]
-            pq = [prima, seconda, terza, quarta]
-            ppq.append(pq)
+        first_round_matches = []
+        for i in range(GROUPS_COUNT):
+            # i è quella testa di serie
+            prima = groups_matches[GROUPS[i % GROUPS_COUNT]][0]
+            seconda = groups_matches[GROUPS[(i + 3) % GROUPS_COUNT]][3]
+            terza = groups_matches[GROUPS[(i + 1) % GROUPS_COUNT]][2]
+            quarta = groups_matches[GROUPS[(i + 2) % GROUPS_COUNT]][1]
 
-        flatted = [item for row in ppq for item in row]
+            if i % 2 == 0:
+                first_round_matches += [prima, terza, seconda, quarta]
+            else:
+                first_round_matches += [prima, seconda, terza, quarta]
+
         match_id = 0
         for round_id in range(TOTAL_ROUNDS):
             num_matches = TEAMS_COUNT // (2 ** (round_id + 1))
             for match_number in range(num_matches):
                 if round_id == 0:
-                    opponent1, opponent2 = flatted[match_number]
+                    opponent1, opponent2 = first_round_matches[match_number]
                 else:
                     opponent1 = {"id": -1}  # Placeholder per i round successivi
                     opponent2 = {"id": -1}  # Placeholder per i round successivi
