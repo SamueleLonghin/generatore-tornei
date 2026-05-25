@@ -1,0 +1,4 @@
+SPREADSHEET_ID = "1za3fWKC5tzrHgAarcRIPQVByM9ID5mXTzpLl-iI9Zsw"
+
+RANGE_BEACH = "Beach"
+RANGE_CALCETTO = "Calcetto"

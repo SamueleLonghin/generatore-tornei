@@ -10,5 +10,4 @@ COPY requirements.txt /app/
 # Installa le dipendenze
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# CMD ["flask", "run", "--host=0.0.0.0"]
 CMD ["python", "app.py"]

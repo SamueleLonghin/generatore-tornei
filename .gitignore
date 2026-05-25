@@ -1,0 +1,5 @@
+venv
+venv_torneo
+.idea
+*__pycache__
+sa.json
